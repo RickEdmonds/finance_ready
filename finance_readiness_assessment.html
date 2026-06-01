@@ -1,0 +1,214 @@
+
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --cyan:#00CFCF; --cyan-light:#E0FAFA; --cyan-mid:#00A8A8;
+    --green:#2ECC71; --green-light:#E2F9EC; --green-mid:#27AE60;
+    --ink:#0D1F1F; --ink-soft:#1E3535; --cream:#F4FAF9;
+    --white:#FFFFFF; --border:#C8E8E4; --muted:#5A7878;
+    --red-bg:#FAECEC; --red-txt:#922929;
+    --amber-bg:#FBF0DC; --amber-txt:#855010;
+    --grn-bg:#E2F9EC; --grn-txt:#1A6B3A;
+    --teal-bg:#D6F5F0; --teal-txt:#0A5F52;
+  }
+  body { font-family: 'DM Sans', system-ui, sans-serif; background:var(--cream); color:var(--ink); }
+  .header { background:var(--ink); color:var(--white); padding:2rem 1.5rem 1.75rem; position:relative; overflow:hidden; }
+  .header::before { content:''; position:absolute; top:-80px; right:-80px; width:320px; height:320px; border-radius:50%; border:1px solid rgba(0,207,207,0.18); }
+  .header::after  { content:''; position:absolute; top:-30px; right:-30px; width:180px; height:180px; border-radius:50%; border:1px solid rgba(46,204,113,0.15); }
+  .header-inner { max-width:780px; margin:0 auto; position:relative; }
+  .header-eyebrow { font-size:11px; font-weight:500; letter-spacing:.12em; text-transform:uppercase; color:var(--cyan); margin-bottom:.5rem; }
+  .header h1 { font-size:clamp(1.5rem,4vw,2.4rem); font-weight:400; line-height:1.2; margin-bottom:.7rem; }
+  .header-sub { font-size:13.5px; font-weight:300; color:rgba(255,255,255,0.62); line-height:1.7; max-width:540px; }
+  .main { max-width:780px; margin:0 auto; padding:1.5rem 1.25rem 3rem; }
+  .narrative-card { background:var(--white); border:1px solid var(--border); border-radius:14px; padding:1.3rem 1.5rem; margin-bottom:1.1rem; position:relative; }
+  .narrative-card::before { content:''; position:absolute; left:0; top:18px; bottom:18px; width:3px; background:linear-gradient(180deg,var(--cyan),var(--green)); border-radius:0 2px 2px 0; }
+  .narrative-label { font-size:11px; font-weight:500; letter-spacing:.1em; text-transform:uppercase; color:var(--cyan-mid); margin-bottom:7px; }
+  .narrative-card p { font-size:14px; line-height:1.75; color:#2A3F3F; font-weight:300; }
+  .video-btn { display:inline-flex; align-items:center; gap:8px; background:linear-gradient(135deg,var(--cyan),var(--green)); color:var(--ink); font-weight:500; font-size:13px; padding:9px 16px; border-radius:40px; text-decoration:none; box-shadow:0 2px 12px rgba(0,207,207,0.3); white-space:nowrap; transition:opacity .2s,transform .15s; }
+  .video-btn:hover { opacity:.9; transform:translateY(-1px); }
+  .fields-card { background:var(--white); border:1px solid var(--border); border-radius:14px; padding:1.3rem 1.5rem; margin-bottom:1.1rem; }
+  .fields-card-label { font-size:11px; font-weight:500; letter-spacing:.1em; text-transform:uppercase; color:var(--green-mid); margin-bottom:.9rem; }
+  .fields-grid { display:grid; grid-template-columns:1fr 1fr; gap:11px; }
+  .field-group { display:flex; flex-direction:column; gap:4px; }
+  .field-group.full { grid-column:1/-1; }
+  .field-group label { font-size:12px; font-weight:500; color:var(--muted); letter-spacing:.04em; }
+  .field-group input { font-family:inherit; font-size:14px; padding:8px 11px; border:1px solid var(--border); border-radius:8px; background:var(--cream); color:var(--ink); outline:none; transition:border-color .2s,box-shadow .2s; }
+  .field-group input:focus { border-color:var(--cyan); box-shadow:0 0 0 3px rgba(0,207,207,0.12); }
+  .save-btn { margin-top:11px; display:inline-flex; align-items:center; gap:7px; background:linear-gradient(135deg,var(--cyan),var(--green)); color:var(--ink); font-family:inherit; font-size:13px; font-weight:500; padding:8px 18px; border-radius:40px; border:none; cursor:pointer; transition:opacity .2s,transform .15s; }
+  .save-btn:hover { opacity:.9; transform:translateY(-1px); }
+  .saved-msg { display:inline-block; margin-left:10px; font-size:12px; color:var(--green-mid); opacity:0; transition:opacity .4s; }
+  .divider { display:flex; align-items:center; gap:12px; margin:1.4rem 0 1rem; }
+  .divider-line { flex:1; height:1px; background:var(--border); }
+  .divider-label { font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); white-space:nowrap; }
+  .req-card { background:var(--white); border:1px solid var(--border); border-radius:14px; padding:1rem 1.3rem 1rem 1.5rem; margin-bottom:8px; transition:border-color .2s; }
+  .req-card:hover { border-color:var(--cyan); }
+  .req-header { display:flex; align-items:flex-start; gap:10px; margin-bottom:8px; }
+  .letter-badge { flex-shrink:0; width:31px; height:31px; border-radius:8px; background:var(--cyan-light); border:1px solid rgba(0,207,207,0.3); display:flex; align-items:center; justify-content:center; font-size:16px; font-weight:600; color:var(--cyan-mid); }
+  .req-title-wrap { flex:1; }
+  .req-title { font-size:14.5px; font-weight:500; color:var(--ink); margin-bottom:2px; }
+  .req-subtitle { font-size:12px; color:var(--muted); }
+  .req-body { font-size:13.5px; line-height:1.7; color:#334040; font-weight:300; margin-bottom:11px; }
+  .slider-wrap { display:flex; align-items:center; gap:9px; padding-top:6px; border-top:1px solid var(--border); }
+  .slider-end-label { font-size:11px; color:var(--muted); white-space:nowrap; }
+  input[type=range] { flex:1; -webkit-appearance:none; appearance:none; height:4px; border-radius:2px; background:var(--border); outline:none; cursor:pointer; }
+  input[type=range]::-webkit-slider-thumb { -webkit-appearance:none; width:18px; height:18px; border-radius:50%; background:linear-gradient(135deg,var(--cyan),var(--green)); border:2px solid #fff; box-shadow:0 0 0 1px var(--cyan-mid); cursor:pointer; transition:transform .1s; }
+  input[type=range]::-webkit-slider-thumb:hover { transform:scale(1.18); }
+  input[type=range]::-moz-range-thumb { width:18px; height:18px; border-radius:50%; background:linear-gradient(135deg,var(--cyan),var(--green)); border:2px solid #fff; cursor:pointer; }
+  .score-pill { font-size:12px; font-weight:500; min-width:36px; text-align:center; padding:3px 8px; border-radius:20px; transition:background .2s,color .2s; }
+  .score-0 { background:#EEF4F4; color:var(--muted); }
+  .score-1 { background:var(--red-bg); color:var(--red-txt); }
+  .score-2 { background:var(--amber-bg); color:var(--amber-txt); }
+  .score-3 { background:var(--amber-bg); color:var(--amber-txt); }
+  .score-4 { background:var(--grn-bg); color:var(--grn-txt); }
+  .score-5 { background:var(--teal-bg); color:var(--teal-txt); }
+  .totals-panel { background:var(--ink-soft); color:var(--white); border-radius:14px; padding:1.3rem 1.5rem; margin:1.4rem 0 1.1rem; display:flex; gap:2rem; align-items:center; flex-wrap:wrap; }
+  .totals-score-num { font-size:2.8rem; line-height:1; background:linear-gradient(135deg,var(--cyan),var(--green)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+  .totals-score-denom { font-size:12px; color:rgba(255,255,255,0.4); margin-top:3px; }
+  .totals-right { flex:1; min-width:160px; }
+  .progress-track { background:rgba(255,255,255,0.1); border-radius:4px; height:6px; overflow:hidden; margin-bottom:9px; }
+  .progress-fill { height:100%; border-radius:4px; background:linear-gradient(90deg,var(--cyan),var(--green)); width:0%; transition:width .35s ease; }
+  .verdict-text { font-size:13.5px; color:rgba(255,255,255,0.68); line-height:1.6; font-weight:300; }
+  .footer { margin-top:1.4rem; padding-top:1.4rem; border-top:1px solid var(--border); font-size:12.5px; color:var(--muted); line-height:2; text-align:center; }
+  .footer a { color:var(--cyan-mid); text-decoration:none; }
+  .footer a:hover { text-decoration:underline; }
+  @media(max-width:500px) { .fields-grid { grid-template-columns:1fr; } .field-group.full { grid-column:1; } }
+</style>
+
+<div class="header">
+  <div class="header-inner">
+    <div class="header-eyebrow">Do Better Business · Township MSME Toolkit</div>
+    <h1>Access to Finance<br>Readiness Assessment</h1>
+    <p class="header-sub">Based on the 7-factor framework shared by KeaObaka Mahuma at the Sophiatown Bizcre8 Excellence in Entrepreneurship Gala, 2018. Use this tool to evaluate how well a business is positioned before approaching funders.</p>
+  </div>
+</div>
+
+<div class="main">
+
+  <div class="narrative-card" style="margin-top:1.4rem;">
+    <div class="narrative-label">Introduction</div>
+    <p>Entrepreneurship is the lifeblood of every economy — entrepreneurs solve problems, improve livelihoods, and drive economic growth. While the journey is tough, those who take total responsibility, persist through hardship, and accept delayed gratification are the ones who ultimately succeed. This framework helps entrepreneurs understand what financiers and investors actually look for when deciding whether to fund a business.</p>
+  </div>
+
+  <div style="margin-bottom:1.1rem;">
+    <a class="video-btn" href="https://tinyurl.com/5abhkp4t" target="_blank" rel="noopener">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8" fill="currentColor" stroke="none"/></svg>
+      Watch source video
+    </a>
+  </div>
+
+  <div class="fields-card">
+    <div class="fields-card-label">Applicant details</div>
+    <div class="fields-grid">
+      <div class="field-group full">
+        <label for="f-name">Applicant name</label>
+        <input type="text" id="f-name" placeholder="Full name" autocomplete="name" />
+      </div>
+      <div class="field-group">
+        <label for="f-biz">Business name</label>
+        <input type="text" id="f-biz" placeholder="Trading name" />
+      </div>
+      <div class="field-group">
+        <label for="f-date">Assessment date</label>
+        <input type="date" id="f-date" />
+      </div>
+    </div>
+    <button class="save-btn" onclick="saveAll()">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+      Save progress
+    </button>
+    <span class="saved-msg" id="saved-msg">✓ Saved</span>
+  </div>
+
+  <div class="divider">
+    <div class="divider-line"></div>
+    <div class="divider-label">The 7 requirements — rate each from 0 to 5</div>
+    <div class="divider-line"></div>
+  </div>
+
+  <div id="req-list"></div>
+
+  <div class="totals-panel">
+    <div>
+      <div class="totals-score-num" id="total-score">0</div>
+      <div class="totals-score-denom">out of 35</div>
+    </div>
+    <div class="totals-right">
+      <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
+      <div class="verdict-text" id="verdict">Move the sliders above to assess the applicant's readiness.</div>
+    </div>
+  </div>
+
+  <div class="narrative-card">
+    <div class="narrative-label">Conclusion</div>
+    <p>The A–G framework — Affordability, Behaviour, Certainty of cash flows, Delivery capacity, Expertise, Formal support, and Governance — is the lens every serious financier applies. Entrepreneurs who understand and address each dimension will dramatically improve their chances of accessing funding. Problems and setbacks are inevitable; what matters is the direction you are building in. There is always only one way for someone who has hit rock bottom — and that is up.</p>
+  </div>
+
+  <div class="footer">
+    <p>Use of readiness criteria by kind permission of <a href="https://www.linkedin.com/in/keaobaka-mahuma-78b128104/" target="_blank" rel="noopener">KeaObaka Mahuma</a></p>
+    <p>Finance Readiness app provided by Rick Ed of <a href="https://dobetterbusiness.co.za/" target="_blank" rel="noopener">DoBetter.Business</a></p>
+    <p style="margin-top:4px;"><a href="https://www.linkedin.com/company/dobetterbusiness/" target="_blank" rel="noopener">linkedin.com/company/dobetterbusiness</a></p>
+  </div>
+
+</div>
+
+<script>
+const STORE_KEY = 'dbb_finance_readiness_v1';
+const reqs = [
+  { letter:"A", title:"Affordability",            subtitle:"Can the business repay or return?",            text:"The business must demonstrate it can generate sufficient returns for investors or service debt repayments. Both the business finances and the owner's personal finances are assessed, since owners often draw from the business when cash is tight — school fees, household expenses, and personal obligations all compete with debt service." },
+  { letter:"B", title:"Behavioural traits",        subtitle:"How has money been handled in the past?",      text:"Past financial behaviour is the best predictor of future behaviour. Bouncing cheques, perpetually overdrawn accounts, or poor money management — personal or business — signals high risk. Financiers need confidence the borrower will handle invested funds responsibly. If there are blemishes, arrangements must be in place to address outstanding obligations." },
+  { letter:"C", title:"Certainty of cash flows",   subtitle:"Are revenues predictable and stable?",         text:"Investors need predictable, consistent revenue streams before committing debt finance. Startups with volatile or unproven cash flows are generally better served by grants, enterprise development funds, or family loans until revenues stabilise. Overdrafts, purchase order financing, and invoice discounting become appropriate once cash flows are demonstrably reliable." },
+  { letter:"D", title:"Delivery capacity",         subtitle:"Can the business fulfil what it wins?",        text:"The business must prove it can actually fulfil contracts it wins. This includes management depth, systems, processes, and the operational discipline to invoice correctly and on time. Many entrepreneurs work for months without invoicing, then cannot meet salary, SARS, and supplier obligations. No delivery means no payment, and no payment means no debt service." },
+  { letter:"E", title:"Expertise & experience",    subtitle:"Does the team have the knowledge to deliver?", text:"Financiers need to see that the entrepreneur has the knowledge and track record to deliver in their chosen sector. Empire builders grow upward from the ground floor; grave diggers end up six feet under. If experience is limited, start small, build credibility, and grow into larger opportunities rather than risking borrowed capital on trial and error." },
+  { letter:"F", title:"Formal support programmes", subtitle:"Is help in place to bridge skills gaps?",       text:"Access to mentors, coaches, consultants, and technical support programmes bridges the gap between what the entrepreneur knows and what they need to know. Mentorship is the shortest bridge to experience. Formal support demonstrates a commitment to performance consistency — the primary concern of every investor — and reduces performance risk substantially." },
+  { letter:"G", title:"Governance",                subtitle:"Are business affairs properly managed?",       text:"There must be a clear separation between personal and business accounts, full compliance with tax obligations, and adherence to industry regulations. Poor governance exposes the business — and any investor — to SARS seizing bank account funds without consent. Registered taxes, compliance, and clean separation of personal and business finances are non-negotiable." }
+];
+const scores = new Array(7).fill(0);
+
+function loadState() {
+  try { const r = localStorage.getItem(STORE_KEY); return r ? JSON.parse(r) : null; } catch(e) { return null; }
+}
+function saveAll() {
+  const state = { name:document.getElementById('f-name').value, biz:document.getElementById('f-biz').value, date:document.getElementById('f-date').value, scores:[...scores] };
+  try {
+    localStorage.setItem(STORE_KEY, JSON.stringify(state));
+    const m = document.getElementById('saved-msg'); m.style.opacity='1'; setTimeout(()=>m.style.opacity='0',2200);
+  } catch(e) { alert('Could not save — your browser may have storage disabled.'); }
+}
+
+const list = document.getElementById('req-list');
+reqs.forEach((r,i) => {
+  const card = document.createElement('div'); card.className='req-card';
+  card.innerHTML = `<div class="req-header"><div class="letter-badge">${r.letter}</div><div class="req-title-wrap"><div class="req-title">${r.title}</div><div class="req-subtitle">${r.subtitle}</div></div></div><p class="req-body">${r.text}</p><div class="slider-wrap"><span class="slider-end-label">Does not meet</span><input type="range" min="0" max="5" step="1" value="0" id="slider-${i}" /><span class="slider-end-label">Fully meets</span><span class="score-pill score-0" id="pill-${i}">0 / 5</span></div>`;
+  list.appendChild(card);
+  card.querySelector(`#slider-${i}`).addEventListener('input', function() {
+    const v=parseInt(this.value); scores[i]=v;
+    const p=document.getElementById(`pill-${i}`); p.textContent=v+' / 5'; p.className='score-pill score-'+v;
+    updateTotal();
+  });
+});
+
+const saved = loadState();
+if (saved) {
+  if (saved.name) document.getElementById('f-name').value=saved.name;
+  if (saved.biz)  document.getElementById('f-biz').value=saved.biz;
+  if (saved.date) document.getElementById('f-date').value=saved.date;
+  if (Array.isArray(saved.scores)) {
+    saved.scores.forEach((v,i)=>{ if(i<7&&typeof v==='number'){ scores[i]=v; const sl=document.getElementById(`slider-${i}`); const p=document.getElementById(`pill-${i}`); if(sl)sl.value=v; if(p){p.textContent=v+' / 5';p.className='score-pill score-'+v;} } });
+    updateTotal();
+  }
+}
+const df=document.getElementById('f-date'); if(!df.value) df.value=new Date().toISOString().split('T')[0];
+
+function updateTotal() {
+  const total=scores.reduce((a,b)=>a+b,0);
+  document.getElementById('total-score').textContent=total;
+  document.getElementById('progress-fill').style.width=((total/35)*100)+'%';
+  let v;
+  if(total===0)      v="Move the sliders above to assess the applicant's readiness.";
+  else if(total<=10) v="Significant gaps exist — this applicant needs substantial preparation before approaching any funder.";
+  else if(total<=20) v="Moderate readiness — address the weaker areas with coaching and structure before applying for funding.";
+  else if(total<=28) v="Good foundation — a few areas need strengthening, but a funding conversation is realistic with the right funder.";
+  else               v="Strong readiness — this applicant is well-positioned to approach financiers with confidence.";
+  document.getElementById('verdict').textContent=v;
+}
+</script>
